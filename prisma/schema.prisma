@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model WorkflowConfig {
+  id                       String   @id @default(uuid())
+  workflowCode             String   @unique
+  workflowName             String
+  microserviceName         String   // "auth-service"
+  microserviceBaseUrl      String   // "https://localhost:1625"
+  downstreamEndpoint       String   // "/api/auth/register"
+
+  env                      String   // "QA", "DEV", "SIT"
+  apiVersion               String   // "v1", "v2"
+  redirectUrl              String?  // Optional: URL to redirect client post-success
+
+  tokenCheck               Boolean  @default(false)
+  otpFlow                  Boolean  @default(false)
+  notification             Boolean  @default(false)
+  notificationScenarioId   String?  // Optional
+  retryCount               Int      @default(0)
+  rollbackUrl              String?  // Optional: for compensating transactions
+  authLevel                String   @default("NONE") // "NONE", "USER", "ADMIN"
+  logResponseBody          Boolean  @default(false)
+  cacheResponse            Boolean  @default(false)
+  featureToggleKey         String?  // Optional for dynamic disabling
+  workflowGroup            String?  // Grouping related workflows
+  schemaValidatorId        String?  // JSON schema reference
+
+  stepSequence             Json     // Ordered list of steps to execute
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  transactions             WorkflowTransaction[]
+}
+
+model WorkflowTransaction {
+  transactionId          String   @id @default(uuid()) // Primary tracking ID
+  workflowConfigId       String
+  workflowCode           String
+  env                    String
+  apiVersion             String
+  origin                 String?   // IP or source system
+  redirectUrl            String?   // Echoed back if configured
+  traceHeaders           Json?     // Store traceId, userId, etc.
+
+  requestPayload         Json
+  responsePayload        Json?
+  success                Boolean
+  successDescription     String?
+  errorDescription       String?
+  stepsFollowed          Json      // Stores array of steps, e.g. ["tokenCheck", "otpSent", "registerCall"]
+  
+  timestampStart         DateTime  @default(now())
+  timestampEnd           DateTime?
+
+  workflowConfig         WorkflowConfig @relation(fields: [workflowConfigId], references: [id])
+
+  @@index([workflowCode])
+  @@index([env])
+}
+

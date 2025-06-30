@@ -1,0 +1,45 @@
+{
+  "name": "ts-workflow-engine-1606",
+  "version": "1.0.0",
+  "description": "Workflow engine to handle every flow",
+  "main": "server.ts",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "dev": "nodemon src/server.ts",
+    "predev": "echo 'Starting development server...'",
+    "development": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "seed": "ts-node src/config/seed.ts"
+  },
+  "keywords": [
+    "Node.js",
+    "Typescript",
+    "Express.js",
+    "SQL"
+  ],
+  "author": "Tanmay Singh",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.10.1",
+    "axios": "^1.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.14.1",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.10.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.4",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.0.7",
+    "@types/uuid": "^10.0.0",
+    "@types/winston": "^2.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
