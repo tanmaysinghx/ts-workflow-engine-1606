@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import axios, { AxiosError } from 'axios';
 import prisma from '../config/db';
+import redis from '../config/redis';
 
 interface WorkflowInput {
     version: string;
@@ -43,6 +44,72 @@ export const processWorkflow = async ({
                 version,
                 startTime,
             });
+        }
+
+        // Step 2.1: OTP Flow
+        if (config.otpFlow) {
+            const otpResp = await handleSendOtp({
+                config,
+                headers,
+                body,
+                transactionId,
+                stepsFollowed,
+                env,
+                version,
+                startTime,
+            });
+
+            const safeConfig = {
+                id: config.id,
+                workflowCode: config.workflowCode,
+                microserviceName: config.microserviceName,
+                microserviceBaseUrl: config.microserviceBaseUrl,
+                downstreamEndpoint: config.downstreamEndpoint,
+                env: config.env,
+                apiVersion: config.apiVersion,
+                tokenCheck: config.tokenCheck,
+                otpFlow: config.otpFlow,
+                notification: config.notification,
+                notificationScenarioId: config.notificationScenarioId,
+                redirectUrl: config.redirectUrl,
+                // any other primitive flags you need…
+            };
+
+            await redis.set(
+                transactionId,
+                JSON.stringify({
+                    config: safeConfig,
+                    version,
+                    env,
+                    startTime: startTime.toISOString(),
+                    stepsFollowed,
+                    otpResponse: otpResp,
+                }),
+                'EX',
+                600
+            );
+
+            return {
+                success: true,
+                transactionId,
+                message: 'OTP sent. Waiting for verification.',
+                otpGenerated: true,
+                configSummary: {
+                    microservice: config.microserviceName,
+                    tokenCheck: config.tokenCheck,
+                    otpFlow: config.otpFlow,
+                    notification: config.notification,
+                },
+                data: {
+                    otpResponse: otpResp,
+                },
+                errors: null,
+                meta: {
+                    timestamp: new Date().toISOString(),
+                    apiVersion: version,
+                },
+
+            };
         }
 
         // 📡 Step 3: Downstream call
@@ -96,6 +163,7 @@ export const processWorkflow = async ({
             success: false,
             transactionId,
             message: 'Workflow processing failed',
+            otpGenerated: false,
             data: null,
             errors: err?.errors ?? {
                 general: err.message ?? 'Unexpected error',
@@ -143,49 +211,6 @@ export const findApiConfig = async ({
 
     return config;
 };
-
-export const logWorkflowTransaction = async ({
-    transactionId,
-    config,
-    body,
-    headers,
-    env,
-    version,
-    startTime,
-    stepsFollowed,
-    success,
-    successDescription,
-}: {
-    transactionId: string;
-    config: any;
-    body: any;
-    headers: any;
-    env: string;
-    version: string;
-    startTime: Date;
-    stepsFollowed: string[];
-    success: boolean;
-    successDescription?: string;
-}) => {
-    await prisma.workflowTransaction.create({
-        data: {
-            transactionId,
-            workflowConfigId: config.id,
-            workflowCode: config.workflowCode,
-            env,
-            apiVersion: version,
-            requestPayload: body,
-            origin: headers['x-origin'] ?? '',
-            traceHeaders: headers,
-            success: success,
-            successDescription: successDescription ?? 'Workflow executed successfully',
-            timestampStart: startTime,
-            timestampEnd: new Date(),
-            stepsFollowed,
-            redirectUrl: config.redirectUrl,
-        },
-    });
-}
 
 export const processVerifyToken = async ({
     config,
@@ -270,6 +295,112 @@ export const processVerifyToken = async ({
         throw error;
     }
 };
+
+export const handleSendOtp = async ({
+    config,
+    headers,
+    body,
+    transactionId,
+    stepsFollowed,
+    env,
+    version,
+    startTime,
+}: {
+    config: any;
+    headers: any;
+    body: any;
+    transactionId: string;
+    stepsFollowed: string[];
+    env: string;
+    version: string;
+    startTime: Date;
+}) => {
+    if (!config.otpFlow) return;
+
+    try {
+        const otpUrl = config.otpMicroServiceUrl ?? `${config.microserviceBaseUrl}/${config.apiVersion}/api/otp/send`;
+        const gearId = config.workflowCode.substring(0, 4);
+
+        const otpData = {
+            gearId: gearId,
+            scenarioId: config.notificationScenarioId,
+            userEmail: body.email ?? headers['x-user-email'],
+            emailOTP: true,
+            mobileOTP: false
+        };
+
+        const otpResp = await axios.post(otpUrl, otpData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!otpResp.data?.success) {
+            throw new Error(otpResp.data?.message ?? 'OTP sending failed');
+        }
+
+        stepsFollowed.push('sendOtp');
+        return otpResp.data;
+    } catch (err) {
+        const isAxios = axios.isAxiosError(err);
+        const axiosError = err as AxiosError;
+        const errorMessage =
+            isAxios && (axiosError.response?.data as { message?: string })?.message
+                ? (axiosError.response?.data as { message?: string }).message
+                : 'OTP sending failed';
+        const error = new Error('OTP sending failed');
+        (error as any).transactionId = transactionId;
+        (error as any).errors = {
+            otp: errorMessage,
+            statusCode: (axiosError.response?.status ?? 500),
+        };
+        (error as any).originalError = err;
+        throw error;
+    }
+}
+
+export const logWorkflowTransaction = async ({
+    transactionId,
+    config,
+    body,
+    headers,
+    env,
+    version,
+    startTime,
+    stepsFollowed,
+    success,
+    successDescription,
+}: {
+    transactionId: string;
+    config: any;
+    body: any;
+    headers: any;
+    env: string;
+    version: string;
+    startTime: Date;
+    stepsFollowed: string[];
+    success: boolean;
+    successDescription?: string;
+}) => {
+    await prisma.workflowTransaction.create({
+        data: {
+            transactionId,
+            workflowConfigId: config.id,
+            workflowCode: config.workflowCode,
+            env,
+            apiVersion: version,
+            requestPayload: body,
+            origin: headers['x-origin'] ?? '',
+            traceHeaders: headers,
+            success: success,
+            successDescription: successDescription ?? 'Workflow executed successfully',
+            timestampStart: startTime,
+            timestampEnd: new Date(),
+            stepsFollowed,
+            redirectUrl: config.redirectUrl,
+        },
+    });
+}
 
 export const handleDownstreamCall = async ({
     config,

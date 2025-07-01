@@ -38,6 +38,8 @@ model WorkflowConfig {
   featureToggleKey         String?  // Optional for dynamic disabling
   workflowGroup            String?  // Grouping related workflows
   schemaValidatorId        String?  // JSON schema reference
+  otpMicroServiceUrl       String?  // Optional: for OTP flows
+  notificationServiceUrl   String?  // Optional: for notifications
 
   stepSequence             Json     // Ordered list of steps to execute
   createdAt                DateTime @default(now())
