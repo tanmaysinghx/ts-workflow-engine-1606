@@ -21,6 +21,107 @@ export const processWorkflow = async ({
     const startTime = new Date();
     const stepsFollowed: string[] = [];
 
+    try {
+        // ✅ Step 1: Fetch Config
+        const config = await findApiConfig({
+            version,
+            env,
+            workflowCode,
+            transactionId,
+            stepsFollowed,
+        });
+
+        // 🔐 Step 2: Token Verification
+        if (config.tokenCheck) {
+            await processVerifyToken({
+                config,
+                body,
+                headers,
+                transactionId,
+                stepsFollowed,
+                env,
+                version,
+                startTime,
+            });
+        }
+
+        // 📡 Step 3: Downstream call
+        const downstreamResp = await handleDownstreamCall({
+            config,
+            body,
+            headers,
+            transactionId,
+            stepsFollowed,
+            env,
+            version,
+            startTime,
+        });
+
+        // 🟢 Final Logging
+        await logWorkflowTransaction({
+            transactionId,
+            config,
+            body,
+            headers,
+            env,
+            version,
+            startTime,
+            stepsFollowed,
+            success: true,
+            successDescription: 'All steps completed including downstream call',
+        });
+
+        return {
+            success: true,
+            transactionId,
+            message: 'Workflow executed successfully',
+            configSummary: {
+                microservice: config.microserviceName,
+                url: config.microserviceBaseUrl + config.downstreamEndpoint,
+                tokenCheck: config.tokenCheck,
+                otpFlow: config.otpFlow,
+                notification: config.notification,
+            },
+            data: {
+                downstreamResponse: downstreamResp,
+            },
+            errors: null,
+            meta: {
+                timestamp: new Date().toISOString(),
+                apiVersion: version,
+            },
+        };
+    } catch (err: any) {
+        return {
+            success: false,
+            transactionId,
+            message: 'Workflow processing failed',
+            data: null,
+            errors: err?.errors ?? {
+                general: err.message ?? 'Unexpected error',
+            },
+            meta: {
+                timestamp: new Date().toISOString(),
+                apiVersion: version,
+            },
+        };
+    }
+};
+
+
+export const findApiConfig = async ({
+    version,
+    env,
+    workflowCode,
+    transactionId,
+    stepsFollowed
+}: {
+    version: string;
+    env: string;
+    workflowCode: string;
+    transactionId: string;
+    stepsFollowed: string[];
+}) => {
     const config = await prisma.workflowConfig.findFirst({
         where: {
             workflowCode,
@@ -40,24 +141,32 @@ export const processWorkflow = async ({
 
     stepsFollowed.push('configFetch');
 
-    //await verifyOtp(...);
-    //const downstreamResponse = await callMicroservice(...); // Only this sets success
+    return config;
+};
 
-    // 🔐 Token Verification
-    if (config.tokenCheck) {
-        await processVerifyToken({
-            config,
-            body,
-            headers,
-            transactionId,
-            stepsFollowed,
-            env,
-            version,
-            startTime,
-        });
-    }
-
-    // ✅ Successful Transaction Logging
+export const logWorkflowTransaction = async ({
+    transactionId,
+    config,
+    body,
+    headers,
+    env,
+    version,
+    startTime,
+    stepsFollowed,
+    success,
+    successDescription,
+}: {
+    transactionId: string;
+    config: any;
+    body: any;
+    headers: any;
+    env: string;
+    version: string;
+    startTime: Date;
+    stepsFollowed: string[];
+    success: boolean;
+    successDescription?: string;
+}) => {
     await prisma.workflowTransaction.create({
         data: {
             transactionId,
@@ -68,38 +177,15 @@ export const processWorkflow = async ({
             requestPayload: body,
             origin: headers['x-origin'] ?? '',
             traceHeaders: headers,
-            success: true,
-            successDescription: 'Workflow config fetched and token validated (if required)',
+            success: success,
+            successDescription: successDescription ?? 'Workflow executed successfully',
             timestampStart: startTime,
             timestampEnd: new Date(),
             stepsFollowed,
             redirectUrl: config.redirectUrl,
         },
     });
-
-    return {
-        success: true,
-        transactionId,
-        message: 'Workflow config fetched and token verified (if required)',
-        data: {
-            configSummary: {
-                microservice: config.microserviceName,
-                url: config.microserviceBaseUrl + config.downstreamEndpoint,
-                tokenCheck: config.tokenCheck,
-                otpFlow: config.otpFlow,
-                notification: config.notification,
-            },
-            data: {
-                downstreamResponse: null
-            },
-        },
-        errors: null,
-        meta: {
-            timestamp: new Date().toISOString(),
-            apiVersion: version,
-        },
-    };
-};
+}
 
 export const processVerifyToken = async ({
     config,
@@ -184,3 +270,69 @@ export const processVerifyToken = async ({
         throw error;
     }
 };
+
+export const handleDownstreamCall = async ({
+    config,
+    body,
+    headers,
+    transactionId,
+    stepsFollowed,
+    env,
+    version,
+    startTime,
+}: {
+    config: any;
+    body: any;
+    headers: any;
+    transactionId: string;
+    stepsFollowed: string[];
+    env: string;
+    version: string;
+    startTime: Date;
+}) => {
+    try {
+        const downstreamUrl = `${config.microserviceBaseUrl}/${config.apiVersion}${config.downstreamEndpoint}`;
+        const downstreamResp = await axios.post(downstreamUrl, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        stepsFollowed.push('downstreamCall');
+
+        return {
+            statusCode: downstreamResp.status,
+            microserviceResponse: downstreamResp.data,
+            errors: null,
+        };
+    } catch (err) {
+        let errorMessage = 'Downstream service error';
+        let statusCode = 500;
+        let errorData: any = null;
+
+        if (axios.isAxiosError(err)) {
+            statusCode = err.response?.status ?? 500;
+            errorData = err.response?.data;
+
+            if (errorData?.message) {
+                errorMessage = errorData.message;
+            } else if (typeof errorData === 'string') {
+                errorMessage = errorData;
+            } else if (errorData?.error) {
+                errorMessage = errorData.error;
+            }
+        }
+
+        const error = new Error('Workflow downstream call failed');
+        (error as any).transactionId = transactionId;
+        (error as any).errors = {
+            downstream: errorMessage,
+            statusCode,
+            rawResponse: errorData,
+        };
+        (error as any).originalError = err;
+
+        throw error;
+    }
+};;
+
