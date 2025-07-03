@@ -75,8 +75,9 @@ export const processWorkflow = async ({
                 // any other primitive flags you need…
             };
 
+            const redisKey = `workflow:${transactionId}`;
             await redis.set(
-                transactionId,
+                redisKey,
                 JSON.stringify({
                     config: safeConfig,
                     version,
@@ -84,6 +85,9 @@ export const processWorkflow = async ({
                     startTime: startTime.toISOString(),
                     stepsFollowed,
                     otpResponse: otpResp,
+                    transactionId,
+                    body,
+                    headers,
                 }),
                 'EX',
                 600

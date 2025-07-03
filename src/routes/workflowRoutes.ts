@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { handleWorkflowRequest } from '../controllers/workflowController';
+import { resumeWorkflowController } from '../controllers/resumeWorkflowController';
 
 const router = Router();
 
-// Example: /workflow-engine/v2/QA/162500001
 router.post('/workflow-engine/:version/:env/:workflowCode', handleWorkflowRequest);
+router.get('/workflow-engine-resume/:transactionId', resumeWorkflowController);
 
 export default router;
