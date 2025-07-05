@@ -32,12 +32,10 @@ model WorkflowConfig {
   notificationScenarioId   String?  // Optional
   retryCount               Int      @default(0)
   rollbackUrl              String?  // Optional: for compensating transactions
-  authLevel                String   @default("NONE") // "NONE", "USER", "ADMIN"
   logResponseBody          Boolean  @default(false)
   cacheResponse            Boolean  @default(false)
   featureToggleKey         String?  // Optional for dynamic disabling
   workflowGroup            String?  // Grouping related workflows
-  schemaValidatorId        String?  // JSON schema reference
   otpMicroServiceUrl       String?  // Optional: for OTP flows
   notificationServiceUrl   String?  // Optional: for notifications
 
