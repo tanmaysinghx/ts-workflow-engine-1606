@@ -16,7 +16,7 @@ datasource db {
 
 model WorkflowConfig {
   id                       String   @id @default(uuid())
-  workflowCode             String   @unique
+  workflowCode             String   
   workflowName             String
   microserviceName         String   // "auth-service"
   microserviceBaseUrl      String   // "https://localhost:1625"
