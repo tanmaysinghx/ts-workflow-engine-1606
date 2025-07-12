@@ -22,7 +22,7 @@ app.use(logger);
 
 app.use('/v1/api/health', healthRoutes);
 app.use('/v1/api/workflow-engine', workflowRoutes);
-app.use('/v1/api/resume-workflow', resumeWorkflowRoutes); // Assuming resumeWorkflowRoutes is similar to workflowRoutes
+app.use('/v1/api/resume-workflow', resumeWorkflowRoutes);
 
 
 export default app;

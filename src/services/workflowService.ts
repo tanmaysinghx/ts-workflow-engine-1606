@@ -427,6 +427,7 @@ export const handleDownstreamCall = async ({
 }) => {
     try {
         const downstreamUrl = `${config.microserviceBaseUrl}/${config.apiVersion}${config.downstreamEndpoint}`;
+        console.log("Downstream Call Url", downstreamUrl);
         const downstreamResp = await axios.post(downstreamUrl, body, {
             headers: {
                 'Content-Type': 'application/json',
