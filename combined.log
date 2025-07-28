@@ -1,3 +1,64 @@
 {"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 17:44:07"}
 {"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-12 17:44:08"}
 {"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-12 17:44:08"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 13:25:26"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-12 13:25:27"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-12 13:25:27"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 13:35:43"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-12 13:35:44"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-12 13:35:44"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 13:44:53"}
+{"clientVersion":"6.10.1","errorCode":"P1001","level":"\u001b[31merror\u001b[39m","message":"Database connection error: Can't reach database server at `db1625-db1625.i.aivencloud.com:23308`\n\nPlease make sure your database server is running at `db1625-db1625.i.aivencloud.com:23308`.","name":"PrismaClientInitializationError","stack":"PrismaClientInitializationError: Can't reach database server at `db1625-db1625.i.aivencloud.com:23308`\n\nPlease make sure your database server is running at `db1625-db1625.i.aivencloud.com:23308`.\n    at r (/usr/src/app/node_modules/@prisma/client/runtime/library.js:112:2565)","timestamp":"2025-07-12 13:44:58"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 13:46:33"}
+{"clientVersion":"6.10.1","errorCode":"P1001","level":"\u001b[31merror\u001b[39m","message":"Database connection error: Can't reach database server at `db1625-db1625.i.aivencloud.com:23308`\n\nPlease make sure your database server is running at `db1625-db1625.i.aivencloud.com:23308`.","name":"PrismaClientInitializationError","stack":"PrismaClientInitializationError: Can't reach database server at `db1625-db1625.i.aivencloud.com:23308`\n\nPlease make sure your database server is running at `db1625-db1625.i.aivencloud.com:23308`.\n    at r (/usr/src/app/node_modules/@prisma/client/runtime/library.js:112:2565)","timestamp":"2025-07-12 13:46:37"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 13:50:33"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-12 13:50:34"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-12 13:50:34"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 13:52:02"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-12 13:52:02"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-12 13:52:02"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 13:53:12"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-12 13:53:13"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-12 13:53:13"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 14:50:51"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-12 14:50:52"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-12 14:50:52"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-12 17:28:23"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-12 17:28:24"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-12 17:28:24"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-13 07:55:02"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-13 07:55:03"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-13 07:55:03"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-13 19:47:10"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-13 19:47:10"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-13 19:47:10"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-17 07:25:20"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-17 07:25:21"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-17 07:25:21"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-17 16:37:08"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-17 16:37:08"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-17 16:37:08"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-17 11:12:00"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-17 11:12:00"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-17 11:12:00"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-18 08:35:52"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-18 08:35:52"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-18 08:35:52"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-19 11:49:47"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-19 11:49:48"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-19 11:49:48"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-19 12:14:17"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-19 12:14:18"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-19 12:14:18"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-24 15:24:10"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-24 15:24:12"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-24 15:24:12"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-24 17:25:50"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-24 17:25:52"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-24 17:25:52"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-28 16:02:46"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-28 16:02:47"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-28 16:02:47"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Server is running on port: 1606","timestamp":"2025-07-28 22:09:19"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connected successfully","timestamp":"2025-07-28 22:09:19"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Database connection successful","timestamp":"2025-07-28 22:09:19"}

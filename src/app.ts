@@ -6,6 +6,7 @@ import healthRoutes from './routes/healthCheckRoute';
 import { logger } from './middleware/logger';
 import workflowRoutes from './routes/workflowRoutes';
 import resumeWorkflowRoutes from './routes/resumeWorkflowRoutes';
+import otpVerifyWorkflowRoute from './routes/otpVerifyWorkflowRoute';
 
 const app = express();
 
@@ -23,6 +24,6 @@ app.use(logger);
 app.use('/v1/api/health', healthRoutes);
 app.use('/v1/api/workflow-engine', workflowRoutes);
 app.use('/v1/api/resume-workflow', resumeWorkflowRoutes);
-
+app.use('/v1/api/verify-otp-workflow', otpVerifyWorkflowRoute);
 
 export default app;
