@@ -52,7 +52,6 @@ export const otpVerifyService = async ({
       ? err.response?.data?.message ?? err.message
       : 'Unexpected error during OTP verification';
     const statusCode = isAxios ? err.response?.status ?? 500 : 500;
-    // If you prefer, define a custom error class here
     const error = new Error('OTP verification and workflow resume failed');
     (error as any).transactionId = transactionId;
     (error as any).statusCode = statusCode;
